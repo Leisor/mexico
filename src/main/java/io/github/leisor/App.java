@@ -2,21 +2,29 @@ package io.github.leisor;
 
 public class App {
     public static void main(String[] args) {
-        // System.out.println("Hello World!");
+        java.util.Scanner scanner = new java.util.Scanner(System.in);
 
         while (true) {
+
             System.out.println("Welcome to game of México [meh-hee-koh]!");
             System.out.println("Enter number of players");
-
+            int numPlayers = readNumberOfPlayers(scanner);
             System.out.println("Enter number of lives");
-
-            System.out.println("Starting game with " + numPlayers + " players and " + numLives + " lives.");
+            int numLives = readNumberOfLives(scanner);
+            Game game = new Game(numPlayers, numLives);
+            game.start();
+            System.out.println("Game over. Do you want to play again? (yes/no)");
+            String response = scanner.nextLine().trim().toLowerCase();
+            if (!response.equals("yes")) {
+                System.out.println("Thank you for playing! Goodbye.");
+                break;
+            }
         }
-
-
+        scanner.close();
     }
 
-    private int readNumberOfPlayers() {
+    private static int readNumberOfPlayers(java.util.Scanner scanner) {
+
         int numPlayers = -1;
         while (numPlayers <= 0) {
             System.out.print("> ");
@@ -33,7 +41,7 @@ public class App {
         return numPlayers;
     }
 
-    private int readNumberOfLives() {
+    private static int readNumberOfLives(java.util.Scanner scanner) {
         int numLives = -1;
         while (numLives <= 0) {
             System.out.print("> ");
@@ -50,5 +58,4 @@ public class App {
         return numLives;
     }
 
-    private java.util.Scanner scanner = new java.util.Scanner(System.in);
 }
