@@ -13,9 +13,9 @@ public class App {
             int numLives = readNumberOfLives(scanner);
             Game game = new Game(numPlayers, numLives);
             game.start();
-            System.out.println("Game over. Do you want to play again? (yes/no)");
+            System.out.println("Game over. Do you want to play again? (y/n)");
             String response = scanner.nextLine().trim().toLowerCase();
-            if (!response.equals("yes")) {
+            if (!response.equals("y")) {
                 System.out.println("Thank you for playing! Goodbye.");
                 break;
             }
