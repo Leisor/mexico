@@ -41,8 +41,6 @@ public class Game {
                     }
                     System.out.println();
                     System.out.println("Player " + (turnOfPlayer + 1) + "\'s turn.");
-
-
                     for (int j = 0; j < 3; j++) {
                         if (j == 0) {
                             System.out.println("Press R to roll the dice.");
@@ -58,6 +56,11 @@ public class Game {
                         if (keyStr.equals("r")) {
                             rollsArray[turnOfPlayer] = Dice.roll();
                             System.out.println("You rolled: " + rollsArray[turnOfPlayer][0] + " and " + rollsArray[turnOfPlayer][1]);
+                            if (rollsArray[turnOfPlayer][0] == 1 && rollsArray[turnOfPlayer][1] == 2
+                                || rollsArray[turnOfPlayer][0] == 2 && rollsArray[turnOfPlayer][1] == 1) {
+                                    System.out.println();
+                                    System.out.println("MÉXICO!");
+                            }
                         } else if (keyStr.equals("s") && j > 0) {
                             break;
                         } else {

@@ -22,5 +22,7 @@ mvn exec:java -Dexec.mainClass="io.github.leisor.App"
 
 # ToDo:
 - previous best roll display
-- roundcounter
 - mehiko-action
+
+# Recent changes
+- MÉXICO-message
