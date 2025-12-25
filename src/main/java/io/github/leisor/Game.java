@@ -18,12 +18,13 @@ public class Game {
         int[] livesArray = new int[numPlayers];
         int[][] rollsArray = new int[numPlayers][];
         int playersLeft = numPlayers;
-        int startingPlayer = 0;
+        System.out.println("Let's determine the starting player by (auto)rolling one die each.");
+        int startingPlayer = Dice.determineStartingPlayer(numPlayers);
         System.out.println("Player " + (startingPlayer + 1) + " starts first.");
         for (int i = 0; i < numPlayers; i++) {
             livesArray[i] = numLives;
         }
-        try {
+        try {   
             Terminal terminal = TerminalBuilder.builder().system(true).build();
             terminal.enterRawMode();
             while (true) {
