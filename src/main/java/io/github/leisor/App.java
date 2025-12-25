@@ -7,10 +7,12 @@ public class App {
         while (true) {
 
             System.out.println("Welcome to game of México [meh-hee-koh]!");
+            System.out.println();
             System.out.println("Enter number of players");
             int numPlayers = readNumberOfPlayers(scanner);
             System.out.println("Enter number of lives");
             int numLives = readNumberOfLives(scanner);
+            System.out.println();
             Game game = new Game(numPlayers, numLives);
             game.start();
             System.out.println("Game over. Do you want to play again? (y/n)");

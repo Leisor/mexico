@@ -32,6 +32,7 @@ public class Dice {
         System.out.println("Player " + (playerWithLowestScore + 1) + " had the worst roll of "
                 + rollsArray[playerWithLowestScore][0] + " and " + rollsArray[playerWithLowestScore][1]
                 + " and loses a life.");
+        System.out.println();
         return playerWithLowestScore;
     }
 

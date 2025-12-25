@@ -15,24 +15,31 @@ public class Game {
     public void start() {
 
         System.out.println("Starting game with " + numPlayers + " players and " + numLives + " lives.");
+        System.out.println();
         int[] livesArray = new int[numPlayers];
         int[][] rollsArray = new int[numPlayers][];
         int playersLeft = numPlayers;
         System.out.println("Let's determine the starting player by (auto)rolling one die each.");
         int startingPlayer = Dice.determineStartingPlayer(numPlayers);
+        System.out.println();
         System.out.println("Player " + (startingPlayer + 1) + " starts first.");
+        System.out.println();
         for (int i = 0; i < numPlayers; i++) {
             livesArray[i] = numLives;
         }
-        try {   
+        try {
             Terminal terminal = TerminalBuilder.builder().system(true).build();
             terminal.enterRawMode();
+            int roundCounter = 1;
             while (true) {
+                System.out.println("----- Round " + roundCounter + " -----");
+                roundCounter++;
                 for (int i = 0; i < numPlayers; i++) {
                     int turnOfPlayer = (startingPlayer + i) % numPlayers;
                     if (livesArray[turnOfPlayer] <= 0) {
                         continue;
                     }
+                    System.out.println();
                     System.out.println("Player " + (turnOfPlayer + 1) + "\'s turn.");
 
 
@@ -58,25 +65,31 @@ public class Game {
                             j--;
                             System.out.println("Invalid input. Try again.");
                         }
+                        System.out.println();
                     }
                 }
-
-                System.out.println("Round over.");
+                System.out.println();
+                System.out.println("--- Round " + (roundCounter - 1) + " Results ---");
+                System.out.println();
                 int lowestScoringPlayer = Dice.evaluateRound(rollsArray, numPlayers, startingPlayer);
                 livesArray[lowestScoringPlayer]--;
                 if (livesArray[lowestScoringPlayer] == 0) {
                     System.out.println("Player " + (lowestScoringPlayer + 1) + " has been eliminated!");
+                    System.out.println();
                     playersLeft--;
                 }
                 System.out.println("Lives remaining:");
                 for (int i = 0; i < numPlayers; i++) {
                     System.out.println("Player " + (i + 1) + ": " + livesArray[i] + " lives");
                 }
+                System.out.println();
                 if (playersLeft <= 1) {
                     System.out.println("Game over!");
+                    System.out.println();
                     for (int i = 0; i < numPlayers; i++) {
                         if (livesArray[i] > 0) {
                             System.out.println("Player " + (i + 1) + " wins!");
+                            System.out.println();
                         }
                     }
                     break;
