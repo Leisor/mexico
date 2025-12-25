@@ -49,43 +49,45 @@ public class Dice {
 
     public static int determineStartingPlayer(int numPlayers) {
         java.util.Random random = new java.util.Random();
-        int[] rolls = new int[numPlayers];
+        int highestRoll = -1;
+        List<Integer> highrollers = new ArrayList<>();
+        List<Integer> playersLeft = new ArrayList<>();
         for (int i = 0; i < numPlayers; i++) {
             int roll = random.nextInt(6) + 1;
             System.out.println("Player " + (i + 1) + " rolled a " + roll);
-            rolls[i] = roll;
-        }
-        List<Integer> allPlayers = new ArrayList<>();
-        for (int i = 0; i < numPlayers; i++) {
-            allPlayers.add(i);
-        }
-        return findStartingPlayerRecursive(rolls, allPlayers);
-    }
-
-    private static int findStartingPlayerRecursive(int[] rolls, List<Integer> currentPlayers) {
-        java.util.Random random = new java.util.Random();
-        int highestRoll = -1;
-        List<Integer> tiedPlayers = new ArrayList<>();
-        for (int i = 0; i < currentPlayers.size(); i++) {
-            int rollValue = rolls[i]; // i indexes into rolls correctly for both initial and recursive calls
-            if (rollValue > highestRoll) {
-                highestRoll = rollValue;
-                tiedPlayers.clear();
-                tiedPlayers.add(currentPlayers.get(i));
-            } else if (rollValue == highestRoll) {
-                tiedPlayers.add(currentPlayers.get(i));
+            if (roll > highestRoll) {
+                highestRoll = roll;
+                highrollers.clear();
+                highrollers.add(i);
+            } else if (roll == highestRoll) {
+                highrollers.add(i);
             }
         }
-        if (tiedPlayers.size() == 1) {
-            return tiedPlayers.get(0);
+        if (highrollers.size() <= 1) {
+            return highrollers.get(0);
         } else {
-            System.out.println("Tie detected. Re-rolling among " + tiedPlayers.size() + " players.");
-            int[] newRolls = new int[tiedPlayers.size()];
-            for (int i = 0; i < tiedPlayers.size(); i++) {
-                newRolls[i] = random.nextInt(6) + 1;
-                System.out.println("Player " + (tiedPlayers.get(i) + 1) + " re-rolled a " + newRolls[i]);
+            while (true) {
+                playersLeft.clear();
+                playersLeft.addAll(highrollers);
+                highrollers.clear();
+                highestRoll = -1;
+                System.out.println();
+                System.out.println("Tie detected among " + playersLeft.size() + " players. Re-rolling");
+                for (int i = 0; i < playersLeft.size(); i++) {
+                    int roll = random.nextInt(6) + 1;
+                    System.out.println("Player " + (playersLeft.get(i)+1) + " rolled a " + roll);
+                    if (roll > highestRoll) {
+                        highestRoll = roll;
+                        highrollers.clear();
+                        highrollers.add(playersLeft.get(i));
+                    } else if (roll == highestRoll) {
+                        highrollers.add(playersLeft.get(i));
+                    }
+                }
+                if (highrollers.size() <= 1) {
+                    return highrollers.get(0);
+                }
             }
-            return findStartingPlayerRecursive(newRolls, tiedPlayers);
         }
     }
 }

@@ -13,7 +13,6 @@ public class Game {
         this.numLives = numLives;
     }
     public void start() {
-
         System.out.println("Starting game with " + numPlayers + " players and " + numLives + " lives.");
         System.out.println();
         int[] livesArray = new int[numPlayers];

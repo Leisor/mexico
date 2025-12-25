@@ -21,8 +21,9 @@ mvn exec:java -Dexec.mainClass="io.github.leisor.App"
 4. Kickers from highest to lowest, e.g. 6,5 beats 6,2 and 5,3 beats 5,1
 
 # ToDo:
-- previous best roll display
-- mehiko-action
+- AI
+- Solving highest EV moves
+- previous worst roll display
 
 # Recent changes
 - MÉXICO-message
