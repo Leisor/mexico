@@ -1,9 +1,9 @@
-## Working implementation of the México dice game
+# Working implementation of the México dice game
 
-# To run the project, use:
+## To run the project, use:
 mvn exec:java -Dexec.mainClass="io.github.leisor.App"
 
-# Game rules:
+## Game rules:
 
 1. Players roll two dice
 2. On each turn after first roll the player can choose to either stay or roll again
@@ -20,10 +20,7 @@ mvn exec:java -Dexec.mainClass="io.github.leisor.App"
 3. Highs, from 6,x to 3,1
 4. Kickers from highest to lowest, e.g. 6,5 beats 6,2 and 5,3 beats 5,1
 
-# ToDo:
+## ToDo:
 - AI
 - Solving highest EV moves
 - previous worst roll display
-
-# Recent changes
-- MÉXICO-message
