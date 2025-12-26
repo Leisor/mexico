@@ -1,7 +1,16 @@
 # Working implementation of the México dice game
 
-## To run the project, use:
+To run the project, use:
+```bash
 mvn exec:java -Dexec.mainClass="io.github.leisor.App"
+```
+
+To run the project in a Docker container, on MacOS run:
+```bash
+docker build --platform linux/amd64 -t mexico-game .
+docker run --platform linux/amd64 -p 8080:8080 -it mexico-game
+```
+open web browser at http://localhost:8080 to run
 
 ## Game rules:
 
