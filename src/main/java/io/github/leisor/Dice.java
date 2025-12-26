@@ -39,7 +39,7 @@ public class Dice {
     private static int CountScore(int die1, int die2) {
         if (die1 == die2) {
             return die1 * 100;
-        } else if (die1 == 1 && die2 == 2 || die2 == 2 && die1 == 1) {
+        } else if (die1 == 1 && die2 == 2 || die1 == 2 && die2 == 1) {
             return 1000;
         } else {
             return Math.max(die1, die2) * 10 + Math.min(die1, die2);

@@ -10,7 +10,7 @@ To run the project in a Docker container, on MacOS run:
 docker build --platform linux/amd64 -t mexico-game .
 docker run --platform linux/amd64 -p 8080:8080 -it mexico-game
 ```
-open web browser at http://localhost:8080 to run
+Open web browser at http://localhost:8080 to play
 
 ## Game rules:
 
