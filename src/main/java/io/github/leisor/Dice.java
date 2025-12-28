@@ -23,7 +23,7 @@ public class Dice {
             }
             int die1 = rollsArray[playerIndex][0];
             int die2 = rollsArray[playerIndex][1];
-            scores[playerIndex] = CountScore(die1, die2);
+            scores[playerIndex] = countScore(die1, die2);
             if (scores[playerIndex] <= lowestScore) {
                 lowestScore = scores[playerIndex];
                 playerWithLowestScore = playerIndex;
@@ -36,7 +36,7 @@ public class Dice {
         return playerWithLowestScore;
     }
 
-    private static int CountScore(int die1, int die2) {
+    public static int countScore(int die1, int die2) {
         if (die1 == die2) {
             return die1 * 100;
         } else if (die1 == 1 && die2 == 2 || die1 == 2 && die2 == 1) {

@@ -20,8 +20,7 @@ public class AIPlayer extends Player {
         // Small delay to simulate thinking
         Thread.sleep(500);
 
-        boolean decision = strategy.shouldRollAgain(currentRoll, rollNumber);
-
+        boolean decision = strategy.shouldRollAgain(lastRoll, rollNumber);
         if (decision) {
             System.out.println("AI decides to roll again.");
         } else {
