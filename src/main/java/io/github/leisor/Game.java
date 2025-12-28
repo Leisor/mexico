@@ -8,7 +8,7 @@ public class Game {
     private int numPlayers;
     private int numLives;
 
-    public Game(int numPlayers, int numLives) {
+    public Game(int numPlayers, int numAIPlayers, int numLives) {
         this.numPlayers = numPlayers;
         this.numLives = numLives;
     }
