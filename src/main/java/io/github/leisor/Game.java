@@ -6,10 +6,12 @@ import org.jline.terminal.TerminalBuilder;
 
 public class Game {
     private int numPlayers;
+    private int numAIPlayers;
     private int numLives;
 
     public Game(int numPlayers, int numAIPlayers, int numLives) {
         this.numPlayers = numPlayers;
+        this.numAIPlayers = numAIPlayers;
         this.numLives = numLives;
     }
     public void start() {
