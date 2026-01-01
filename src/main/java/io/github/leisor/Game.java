@@ -25,9 +25,6 @@ public class Game {
         System.out.println();
         System.out.println("Player " + (startingPlayer + 1) + " starts first.");
         System.out.println();
-        for (int i = 0; i < numPlayers; i++) {
-            players[i].setLives(numLives);
-        }
         try {
             Terminal terminal = TerminalBuilder.builder().system(true).build();
             terminal.enterRawMode();
@@ -37,42 +34,11 @@ public class Game {
                 roundCounter++;
                 for (int i = 0; i < numPlayers; i++) {
                     int turnOfPlayer = (startingPlayer + i) % numPlayers;
-
                     if (!players[turnOfPlayer].isAlive()) {
                         continue;
                     }
                     System.out.println();
                     playerTurn(players[turnOfPlayer], terminal);
-                    /* System.out.println("Player " + (turnOfPlayer + 1) + "\'s turn.");
-                    for (int j = 0; j < 3; j++) {
-                        if (j == 0) {
-                            System.out.println("Press R to roll the dice.");
-                        } else {
-                            System.out.println("Press R to roll again or S to stay.");
-                        }
-
-                        int input = terminal.reader().read();
-                        char key = (char) input;
-                        String keyStr = String.valueOf(key).toLowerCase();
-
-                        if (keyStr.equals("r")) {
-                            players[turnOfPlayer].setLastRoll(Dice.roll());
-                            System.out.println("You rolled: " + players[turnOfPlayer].getLastRoll()[0] + " and " + players[turnOfPlayer].getLastRoll()[1]);
-
-                            if (players[turnOfPlayer].getLastRoll()[0] == 1 && players[turnOfPlayer].getLastRoll()[1] == 2
-                                || players[turnOfPlayer].getLastRoll()[0] == 2 && players[turnOfPlayer].getLastRoll()[1] == 1) {
-                                    System.out.println();
-                                    System.out.println("MÉXICO!");
-                            }
-                        } else if (keyStr.equals("s") && j > 0) {
-                            break;
-                        } else {
-                            j--;
-                            System.out.println("Invalid input. Try again.");
-                        }
-                        System.out.println();
-                     */
-
                 }
                 System.out.println();
                 System.out.println("--- Round " + (roundCounter - 1) + " Results ---");
@@ -143,7 +109,7 @@ public class Game {
             if (wantsToRoll) {
                 int[] roll = Dice.roll();
                 player.setLastRoll(roll);
-                System.out.println("You rolled: " + roll[0] + " and " + roll[1]);
+                System.out.println("Rolled: " + roll[0] + " and " + roll[1]);
 
                 if (roll[0] == 1 && roll[1] == 2 || roll[0] == 2 && roll[1] == 1) {
                     System.out.println();
