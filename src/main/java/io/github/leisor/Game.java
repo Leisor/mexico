@@ -41,9 +41,9 @@ public class Game {
                     if (!players[turnOfPlayer].isAlive()) {
                         continue;
                     }
-
                     System.out.println();
-                    System.out.println("Player " + (turnOfPlayer + 1) + "\'s turn.");
+                    playerTurn(players[turnOfPlayer], terminal);
+                    /* System.out.println("Player " + (turnOfPlayer + 1) + "\'s turn.");
                     for (int j = 0; j < 3; j++) {
                         if (j == 0) {
                             System.out.println("Press R to roll the dice.");
@@ -71,7 +71,8 @@ public class Game {
                             System.out.println("Invalid input. Try again.");
                         }
                         System.out.println();
-                    }
+                     */
+
                 }
                 System.out.println();
                 System.out.println("--- Round " + (roundCounter - 1) + " Results ---");
@@ -132,6 +133,26 @@ public class Game {
             } else {
                 players[i] = new HumanPlayer(i + 1, numLives);
             }
+        }
+    }
+
+    private void playerTurn(Player player, Terminal terminal) throws Exception {
+        System.out.println("Player " + player.getPlayerNumber() + "\'s turn.");
+        for (int rollNumber = 0; rollNumber < 3; rollNumber++) {
+            boolean wantsToRoll = player.decideToRoll(rollNumber, terminal);
+            if (wantsToRoll) {
+                int[] roll = Dice.roll();
+                player.setLastRoll(roll);
+                System.out.println("You rolled: " + roll[0] + " and " + roll[1]);
+
+                if (roll[0] == 1 && roll[1] == 2 || roll[0] == 2 && roll[1] == 1) {
+                    System.out.println();
+                    System.out.println("MÉXICO!");
+                }
+            } else {
+                break;
+            }
+            System.out.println();
         }
     }
 

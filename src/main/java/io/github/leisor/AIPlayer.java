@@ -18,7 +18,7 @@ public class AIPlayer extends Player {
     @Override
     public boolean decideToRoll(int rollNumber, Terminal terminal) throws Exception {
         // Small delay to simulate thinking
-        Thread.sleep(500);
+        //Thread.sleep(500);
 
         boolean decision = strategy.shouldRollAgain(lastRoll, rollNumber);
         if (decision) {
