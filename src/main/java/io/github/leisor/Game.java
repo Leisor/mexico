@@ -17,8 +17,8 @@ public class Game {
     public void start() {
         System.out.println("Starting game with " + numPlayers + " players and " + numLives + " lives.");
         System.out.println();
-        int[] livesArray = new int[numPlayers];
-        int[][] rollsArray = new int[numPlayers][];
+        Player[] players = new Player[numPlayers];
+        initializePlayers(players);
         int playersLeft = numPlayers;
         System.out.println("Let's determine the starting player by (auto)rolling one die each.");
         int startingPlayer = Dice.determineStartingPlayer(numPlayers);
@@ -26,7 +26,7 @@ public class Game {
         System.out.println("Player " + (startingPlayer + 1) + " starts first.");
         System.out.println();
         for (int i = 0; i < numPlayers; i++) {
-            livesArray[i] = numLives;
+            players[i].setLives(numLives);
         }
         try {
             Terminal terminal = TerminalBuilder.builder().system(true).build();
@@ -37,9 +37,11 @@ public class Game {
                 roundCounter++;
                 for (int i = 0; i < numPlayers; i++) {
                     int turnOfPlayer = (startingPlayer + i) % numPlayers;
-                    if (livesArray[turnOfPlayer] <= 0) {
+
+                    if (!players[turnOfPlayer].isAlive()) {
                         continue;
                     }
+
                     System.out.println();
                     System.out.println("Player " + (turnOfPlayer + 1) + "\'s turn.");
                     for (int j = 0; j < 3; j++) {
@@ -49,23 +51,22 @@ public class Game {
                             System.out.println("Press R to roll again or S to stay.");
                         }
 
-                        // Read single character without Enter
                         int input = terminal.reader().read();
                         char key = (char) input;
                         String keyStr = String.valueOf(key).toLowerCase();
 
                         if (keyStr.equals("r")) {
-                            rollsArray[turnOfPlayer] = Dice.roll();
-                            System.out.println("You rolled: " + rollsArray[turnOfPlayer][0] + " and " + rollsArray[turnOfPlayer][1]);
-                            if (rollsArray[turnOfPlayer][0] == 1 && rollsArray[turnOfPlayer][1] == 2
-                                || rollsArray[turnOfPlayer][0] == 2 && rollsArray[turnOfPlayer][1] == 1) {
+                            players[turnOfPlayer].setLastRoll(Dice.roll());
+                            System.out.println("You rolled: " + players[turnOfPlayer].getLastRoll()[0] + " and " + players[turnOfPlayer].getLastRoll()[1]);
+
+                            if (players[turnOfPlayer].getLastRoll()[0] == 1 && players[turnOfPlayer].getLastRoll()[1] == 2
+                                || players[turnOfPlayer].getLastRoll()[0] == 2 && players[turnOfPlayer].getLastRoll()[1] == 1) {
                                     System.out.println();
                                     System.out.println("MÉXICO!");
                             }
                         } else if (keyStr.equals("s") && j > 0) {
                             break;
                         } else {
-                            // Invalid input, retry
                             j--;
                             System.out.println("Invalid input. Try again.");
                         }
@@ -75,23 +76,31 @@ public class Game {
                 System.out.println();
                 System.out.println("--- Round " + (roundCounter - 1) + " Results ---");
                 System.out.println();
-                int lowestScoringPlayer = Dice.evaluateRound(rollsArray, numPlayers, startingPlayer);
-                livesArray[lowestScoringPlayer]--;
-                if (livesArray[lowestScoringPlayer] == 0) {
+                int lowestScoringPlayer = Dice.evaluateRound(
+                    java.util.Arrays.stream(players)
+                        .map(p -> p.getLastRoll())
+                        .toArray(int[][]::new),
+                    numPlayers,
+                    startingPlayer
+                );
+
+                players[lowestScoringPlayer].loseLife();
+
+                if (!players[lowestScoringPlayer].isAlive()) {
                     System.out.println("Player " + (lowestScoringPlayer + 1) + " has been eliminated!");
                     System.out.println();
                     playersLeft--;
                 }
                 System.out.println("Lives remaining:");
                 for (int i = 0; i < numPlayers; i++) {
-                    System.out.println("Player " + (i + 1) + ": " + livesArray[i] + " lives");
+                    System.out.println("Player " + (i + 1) + ": " + players[i].getLives() + " lives");
                 }
                 System.out.println();
                 if (playersLeft <= 1) {
                     System.out.println("Game over!");
                     System.out.println();
                     for (int i = 0; i < numPlayers; i++) {
-                        if (livesArray[i] > 0) {
+                        if (players[i].isAlive()) {
                             System.out.println("Player " + (i + 1) + " wins!");
                             System.out.println();
                         }
@@ -103,7 +112,9 @@ public class Game {
                 if (startingPlayer >= numPlayers) {
                     startingPlayer = 0;
                 }
-                rollsArray = new int[numPlayers][];
+                for (int i = 0; i < numPlayers; i++) {
+                    players[i].setLastRoll(null);
+                }
             }
             terminal.close();
 
@@ -112,6 +123,16 @@ public class Game {
         }
 
 
+    }
+
+    private void initializePlayers(Player[] players) {
+        for (int i = 0; i < numPlayers; i++) {
+            if (i < numAIPlayers) {
+                players[i] = new AIPlayer(i + 1, numLives);
+            } else {
+                players[i] = new HumanPlayer(i + 1, numLives);
+            }
+        }
     }
 
 }
