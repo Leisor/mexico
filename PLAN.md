@@ -20,7 +20,3 @@
     - Always stay when player rolls 6,2 or 2,6
         - Exception: Player is the last player and 6,2 is not enough to beat the previous worst roll
     - This is not based on any actual calculation, but could be used as base case for analysis
-
-
-
-## Logic
