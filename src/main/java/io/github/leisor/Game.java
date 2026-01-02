@@ -107,18 +107,13 @@ public class Game {
     private void playerTurn(Player player, Terminal terminal) throws Exception {
         System.out.println("Player " + player.getPlayerNumber() + "\'s turn.");
         if (currentWorstRoll != null) {
-            System.out.println("Current worst roll to beat: " + formatRoll(currentWorstRoll));
+            System.out.println("Current worst roll to beat: " + Dice.formatRoll(currentWorstRoll));
         }
         for (int rollNumber = 0; rollNumber < 3; rollNumber++) {
             boolean wantsToRoll = player.decideToRoll(rollNumber, terminal);
             if (wantsToRoll) {
                 int[] roll = Dice.roll();
                 player.setLastRoll(roll);
-                int score = Dice.countScore(roll[0], roll[1]);
-                if (currentWorstScore == -1 || score < currentWorstScore) {
-                    currentWorstScore = score;
-                    currentWorstRoll = roll;
-                }
                 System.out.println("Rolled: " + roll[0] + " and " + roll[1]);
 
                 if (roll[0] == 1 && roll[1] == 2 || roll[0] == 2 && roll[1] == 1) {
@@ -130,21 +125,15 @@ public class Game {
             }
             System.out.println();
         }
-    }
 
-    private String formatRoll(int[] dice) {
-        int die1 = dice[0];
-        int die2 = dice[1];
-
-        // México exception: always show as 1,2
-        if ((die1 == 1 && die2 == 2) || (die1 == 2 && die2 == 1)) {
-            return "1,2";
+        int[] finalRoll = player.getLastRoll();
+        if (finalRoll != null) {
+            int score = Dice.countScore(finalRoll[0], finalRoll[1]);
+            if (currentWorstScore == -1 || score < currentWorstScore) {
+                currentWorstScore = score;
+                currentWorstRoll = finalRoll;
+            }
         }
-
-        // Otherwise: higher die first
-        int higher = Math.max(die1, die2);
-        int lower = Math.min(die1, die2);
-        return higher + "," + lower;
     }
 
 }

@@ -19,7 +19,7 @@ public class Dice {
         for (int i = 0; i < numPlayers; i++) {
             int playerIndex = (startingPlayer + i) % numPlayers;
             if (rollsArray[playerIndex] == null) {
-                continue; // Player did not roll
+                continue;
             }
             int die1 = rollsArray[playerIndex][0];
             int die2 = rollsArray[playerIndex][1];
@@ -30,7 +30,7 @@ public class Dice {
             }
         }
         System.out.println("Player " + (playerWithLowestScore + 1) + " had the worst roll of "
-                + rollsArray[playerWithLowestScore][0] + " and " + rollsArray[playerWithLowestScore][1]
+                + formatRoll(rollsArray[playerWithLowestScore])
                 + " and loses a life.");
         System.out.println();
         return playerWithLowestScore;
@@ -89,5 +89,18 @@ public class Dice {
                 }
             }
         }
+    }
+
+    public static String formatRoll(int[] dice) {
+        int die1 = dice[0];
+        int die2 = dice[1];
+
+        if ((die1 == 1 && die2 == 2) || (die1 == 2 && die2 == 1)) {
+            return "1,2";
+        }
+
+        int higher = Math.max(die1, die2);
+        int lower = Math.min(die1, die2);
+        return higher + "," + lower;
     }
 }
