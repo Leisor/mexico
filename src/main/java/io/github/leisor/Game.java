@@ -36,13 +36,23 @@ public class Game {
                 roundCounter++;
                 currentWorstScore = -1;
                 currentWorstRoll = null;
+
                 for (int i = 0; i < numPlayers; i++) {
                     int turnOfPlayer = (startingPlayer + i) % numPlayers;
                     if (!players[turnOfPlayer].isAlive()) {
                         continue;
                     }
+
+                    int playersAfter = 0;
+                    for (int k = 1; k < numPlayers; k++) {
+                        int idx = (turnOfPlayer + k) % numPlayers;
+                        if (players[idx].isAlive()) {
+                            playersAfter++;
+                        }
+                    }
+
                     System.out.println();
-                    playerTurn(players[turnOfPlayer], terminal);
+                    playerTurn(players[turnOfPlayer], terminal, playersAfter);
                 }
                 System.out.println();
                 System.out.println("--- Round " + (roundCounter - 1) + " Results ---");
@@ -104,13 +114,20 @@ public class Game {
         }
     }
 
-    private void playerTurn(Player player, Terminal terminal) throws Exception {
+    private void playerTurn(Player player, Terminal terminal, int playersAfter) throws Exception {
         System.out.println("Player " + player.getPlayerNumber() + "\'s turn.");
         if (currentWorstRoll != null) {
             System.out.println("Current worst roll to beat: " + Dice.formatRoll(currentWorstRoll));
         }
+
+        GameContext context = new GameContext();
+        context.currentWorstScore = currentWorstScore;
+        context.currentWorstRoll = currentWorstRoll;
+        context.playersAfter = playersAfter;
+        context.isLastPlayer = playersAfter == 0;
+
         for (int rollNumber = 0; rollNumber < 3; rollNumber++) {
-            boolean wantsToRoll = player.decideToRoll(rollNumber, terminal);
+            boolean wantsToRoll = player.decideToRoll(rollNumber, terminal, context);
             if (wantsToRoll) {
                 int[] roll = Dice.roll();
                 player.setLastRoll(roll);
@@ -129,7 +146,7 @@ public class Game {
         int[] finalRoll = player.getLastRoll();
         if (finalRoll != null) {
             int score = Dice.countScore(finalRoll[0], finalRoll[1]);
-            if (currentWorstScore == -1 || score < currentWorstScore) {
+            if (currentWorstScore == -1 || score <= currentWorstScore) {
                 currentWorstScore = score;
                 currentWorstRoll = finalRoll;
             }

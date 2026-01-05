@@ -36,15 +36,43 @@ public class Dice {
         return playerWithLowestScore;
     }
 
+    /**
+     * Calculate ordinal score based on ranking (1 = worst, 21 = best).
+     * Used for ranking and EV calculations where rank differences matter.
+     */
     public static int countScore(int die1, int die2) {
-        if (die1 == die2) {
-            return die1 * 100;
-        } else if (die1 == 1 && die2 == 2 || die1 == 2 && die2 == 1) {
-            return 1000;
-        } else {
-            return Math.max(die1, die2) * 10 + Math.min(die1, die2);
+        // Normalize to ensure low <= high
+        int low = Math.min(die1, die2);
+        int high = Math.max(die1, die2);
+
+        // México (1,2) - best roll
+        if (low == 1 && high == 2) {
+            return 21;
         }
 
+        // Pairs (highest to lowest): 6,6=20, 5,5=19, ..., 1,1=15
+        if (low == high) {
+            return 14 + low;
+        }
+
+        // Non-pairs in descending order
+        if (high == 6 && low == 5) return 14;
+        if (high == 6 && low == 4) return 13;
+        if (high == 6 && low == 3) return 12;
+        if (high == 6 && low == 2) return 11;
+        if (high == 6 && low == 1) return 10;
+        if (high == 5 && low == 4) return 9;
+        if (high == 5 && low == 3) return 8;
+        if (high == 5 && low == 2) return 7;
+        if (high == 5 && low == 1) return 6;
+        if (high == 4 && low == 3) return 5;
+        if (high == 4 && low == 2) return 4;
+        if (high == 4 && low == 1) return 3;
+        if (high == 3 && low == 2) return 2;
+        if (high == 3 && low == 1) return 1;
+
+        // Should never reach here
+        return 0;
     }
 
     public static int determineStartingPlayer(int numPlayers) {

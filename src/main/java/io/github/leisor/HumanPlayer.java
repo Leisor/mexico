@@ -8,7 +8,7 @@ public class HumanPlayer extends Player {
     }
 
     @Override
-    public boolean decideToRoll(int rollNumber, Terminal terminal) throws Exception {
+    public boolean decideToRoll(int rollNumber, Terminal terminal, GameContext context) throws Exception {
         if (rollNumber == 0) {
             System.out.println("Press R to roll the dice.");
         } else {

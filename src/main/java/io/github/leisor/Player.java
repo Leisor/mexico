@@ -12,7 +12,7 @@ public abstract class Player {
         this.lastRoll = null;
     }
 
-    public abstract boolean decideToRoll(int rollNumber, Terminal terminal) throws Exception;
+    public abstract boolean decideToRoll(int rollNumber, Terminal terminal, GameContext context) throws Exception;
 
     public abstract String getPlayerType();
 

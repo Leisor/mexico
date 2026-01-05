@@ -5,10 +5,9 @@ import org.jline.terminal.Terminal;
 public class AIPlayer extends Player {
     private PlayerStrategy strategy;
 
-
     public AIPlayer(int playerNumber, int lives) {
         super(playerNumber, lives);
-        this.strategy = new BasicStrategy();
+        this.strategy = new BeatWorstStrategy();
     }
 
     public void setStrategy(PlayerStrategy strategy) {
@@ -16,13 +15,17 @@ public class AIPlayer extends Player {
     }
 
     @Override
-    public boolean decideToRoll(int rollNumber, Terminal terminal) throws Exception {
-        // Small delay to simulate thinking
-        Thread.sleep(500);
+    public boolean decideToRoll(int rollNumber, Terminal terminal, GameContext context) throws Exception {
+        Thread.sleep(200);
 
-        boolean decision = strategy.shouldRollAgain(lastRoll, rollNumber);
+        boolean decision = strategy.shouldRollAgain(lastRoll, rollNumber, context);
+
         if (decision) {
-            System.out.println("AI decides to roll again.");
+            if (rollNumber == 0) {
+                System.out.println("AI decides to roll.");
+            } else {
+                System.out.println("AI decides to roll again.");
+            }
         } else {
             System.out.println("AI decides to stay.");
         }
@@ -34,5 +37,4 @@ public class AIPlayer extends Player {
     public String getPlayerType() {
         return "AI";
     }
-
 }
