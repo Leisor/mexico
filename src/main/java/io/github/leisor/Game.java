@@ -10,6 +10,8 @@ public class Game {
     private int currentWorstScore;
     private int[] currentWorstRoll;
 
+    private static final int MAX_ROLLS_PER_TURN = 3;
+
     public Game(int numPlayers, int numAIPlayers, int numLives) {
         this.numPlayers = numPlayers;
         this.numAIPlayers = numAIPlayers;
@@ -43,9 +45,10 @@ public class Game {
                         continue;
                     }
 
+                    // Count *alive players remaining to act later in this round order*
                     int playersAfter = 0;
-                    for (int k = 1; k < numPlayers; k++) {
-                        int idx = (turnOfPlayer + k) % numPlayers;
+                    for (int k = i + 1; k < numPlayers; k++) {
+                        int idx = (startingPlayer + k) % numPlayers;
                         if (players[idx].isAlive()) {
                             playersAfter++;
                         }
@@ -54,6 +57,7 @@ public class Game {
                     System.out.println();
                     playerTurn(players[turnOfPlayer], terminal, playersAfter);
                 }
+
                 System.out.println();
                 System.out.println("--- Round " + (roundCounter - 1) + " Results ---");
                 System.out.println();
@@ -101,7 +105,6 @@ public class Game {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     private void initializePlayers(Player[] players) {
@@ -112,6 +115,67 @@ public class Game {
                 players[i] = new HumanPlayer(i + 1, numLives);
             }
         }
+    }
+
+    private void printDecisionHints(Player player, int rollNumber, GameContext context) {
+        int rollsRemaining = MAX_ROLLS_PER_TURN - rollNumber;
+
+        System.out.println("[Decision hints]");
+        System.out.println("  Roll number: " + (rollNumber + 1) + "/" + MAX_ROLLS_PER_TURN);
+        System.out.println("  Rolls remaining: " + rollsRemaining);
+        System.out.println("  Players after you (alive): " + (context != null ? context.playersAfter : "?"));
+
+        int[] lastRoll = player.getLastRoll();
+        if (lastRoll == null) {
+            System.out.println("  Current roll: (none yet)");
+        } else {
+            int currentScore = Dice.countScore(lastRoll[0], lastRoll[1]);
+            System.out.println("  Current roll: " + Dice.formatRoll(lastRoll) + " (score: " + currentScore + ")");
+        }
+
+        boolean hasWorstToBeat = context != null && context.currentWorstScore >= 0 && context.currentWorstRoll != null;
+        if (!hasWorstToBeat) {
+            System.out.println("  Worst to beat: (none yet)");
+            System.out.println("  Probabilities: (you are setting the first score this round)");
+            return;
+        }
+
+        System.out.println("  Worst to beat: " + Dice.formatRoll(context.currentWorstRoll)
+                + " (score: " + context.currentWorstScore + ")");
+
+        // If we don't have a current roll yet, we can still show "roll now"
+        // probabilities.
+        if (lastRoll == null) {
+            double pBeatWithin = EVCalculator.probabilityBeatWithinRolls(context.currentWorstScore, rollsRemaining);
+            double loseIfRoll = EVCalculator.probabilityLoseIfRollNow(
+                    context.currentWorstScore,
+                    rollsRemaining,
+                    context.playersAfter);
+
+            System.out
+                    .println("  P(beat worst within remaining rolls): " + String.format("%.2f%%", pBeatWithin * 100.0));
+            System.out.println("  P(lose life | roll): " + String.format("%.2f%%", loseIfRoll * 100.0));
+            return;
+        }
+
+        int currentScore = Dice.countScore(lastRoll[0], lastRoll[1]);
+
+        double loseIfStay = EVCalculator.probabilityLoseIfStay(
+                currentScore,
+                context.currentWorstScore,
+                context.playersAfter);
+
+        double loseIfRoll = EVCalculator.probabilityLoseIfRollNow(
+                context.currentWorstScore,
+                rollsRemaining,
+                context.playersAfter);
+
+        double delta = loseIfStay - loseIfRoll;
+
+        System.out.println("  P(lose life | stay): " + String.format("%.2f%%", loseIfStay * 100.0));
+        System.out.println("  P(lose life | roll): " + String.format("%.2f%%", loseIfRoll * 100.0));
+        System.out.println("  Benefit (stay - roll): " + String.format("%.2f%%", delta * 100.0)
+                + (delta > 0 ? " (rolling helps)" : (delta < 0 ? " (staying helps)" : " (indifferent)")));
     }
 
     private void playerTurn(Player player, Terminal terminal, int playersAfter) throws Exception {
@@ -126,14 +190,16 @@ public class Game {
         context.playersAfter = playersAfter;
         context.isLastPlayer = playersAfter == 0;
 
-        for (int rollNumber = 0; rollNumber < 3; rollNumber++) {
+        for (int rollNumber = 0; rollNumber < MAX_ROLLS_PER_TURN; rollNumber++) {
+            printDecisionHints(player, rollNumber, context);
+
             boolean wantsToRoll = player.decideToRoll(rollNumber, terminal, context);
             if (wantsToRoll) {
                 int[] roll = Dice.roll();
                 player.setLastRoll(roll);
                 System.out.println("Rolled: " + roll[0] + " and " + roll[1]);
 
-                if (roll[0] == 1 && roll[1] == 2 || roll[0] == 2 && roll[1] == 1) {
+                if ((roll[0] == 1 && roll[1] == 2) || (roll[0] == 2 && roll[1] == 1)) {
                     System.out.println();
                     System.out.println("MÉXICO!");
                 }
@@ -143,6 +209,8 @@ public class Game {
             System.out.println();
         }
 
+        // Update the round's current worst (must match Dice.evaluateRound tie-breaking:
+        // <=).
         int[] finalRoll = player.getLastRoll();
         if (finalRoll != null) {
             int score = Dice.countScore(finalRoll[0], finalRoll[1]);
@@ -152,5 +220,4 @@ public class Game {
             }
         }
     }
-
 }
